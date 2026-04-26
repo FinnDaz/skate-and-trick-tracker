@@ -74,7 +74,7 @@
 
 
 
-    input {
+    input, button {
 
 
 
@@ -86,7 +86,7 @@
 
 
 
-      margin: 8px 0;
+      margin: 6px 0;
 
 
 
@@ -103,26 +103,6 @@
 
 
     button {
-
-
-
-      width: 100%;
-
-
-
-      padding: 12px;
-
-
-
-      margin-top: 8px;
-
-
-
-      border-radius: 10px;
-
-
-
-      border: none;
 
 
 
@@ -146,6 +126,50 @@
 
 
 
+    .topbar {
+
+
+
+      display: flex;
+
+
+
+      justify-content: space-between;
+
+
+
+      padding: 10px;
+
+
+
+      background: #111;
+
+
+
+    }
+
+
+
+    .content {
+
+
+
+      max-width: 520px;
+
+
+
+      margin: auto;
+
+
+
+      padding: 15px;
+
+
+
+    }
+
+
+
     .card {
 
 
@@ -154,19 +178,151 @@
 
 
 
-      margin: 10px;
+      margin: 12px 0;
 
 
 
-      padding: 10px;
+      padding: 15px;
 
 
 
-      border-radius: 10px;
+      border-radius: 12px;
 
 
 
       text-align: left;
+
+
+
+    }
+
+
+
+    .rank {
+
+
+
+      color: #00ffcc;
+
+
+
+      font-weight: bold;
+
+
+
+    }
+
+
+
+    .stats {
+
+
+
+      color: #ccc;
+
+
+
+      font-size: 14px;
+
+
+
+      margin-top: 5px;
+
+
+
+      line-height: 1.4;
+
+
+
+    }
+
+
+
+    .btnRow {
+
+
+
+      display: flex;
+
+
+
+      gap: 8px;
+
+
+
+      margin-top: 10px;
+
+
+
+    }
+
+
+
+    .land {
+
+
+
+      background: #00c853;
+
+
+
+      flex: 1;
+
+
+
+      padding: 8px;
+
+
+
+      border-radius: 8px;
+
+
+
+      border: none;
+
+
+
+      color: white;
+
+
+
+      font-weight: bold;
+
+
+
+    }
+
+
+
+    .miss {
+
+
+
+      background: #d50000;
+
+
+
+      flex: 1;
+
+
+
+      padding: 8px;
+
+
+
+      border-radius: 8px;
+
+
+
+      border: none;
+
+
+
+      color: white;
+
+
+
+      font-weight: bold;
 
 
 
@@ -183,6 +339,10 @@
 
 
 <body>
+
+
+
+<!-- LOGIN -->
 
 
 
@@ -218,31 +378,55 @@
 
 
 
+<!-- APP -->
+
+
+
 <div id="app" class="hidden">
 
 
 
-  <h3 id="userInfo">👤 Loading...</h3>
+  <div class="topbar">
 
 
 
-  <input id="trickName" placeholder="Trick name">
+    <div>🛹 Skate Tracker</div>
 
 
 
-  <button onclick="addTrick()">Add Trick</button>
+    <button onclick="logout()">Logout</button>
 
 
 
-  <h3>🏆 Leaderboard</h3>
+  </div>
 
 
 
-  <div id="list"></div>
+  <div class="content">
 
 
 
-  <button onclick="logout()">Logout</button>
+    <h3 id="userInfo">👤 Loading...</h3>
+
+
+
+    <input id="trickName" placeholder="Enter trick name">
+
+
+
+    <button onclick="addTrick()">Add Trick</button>
+
+
+
+    <h3>🏆 Leaderboard</h3>
+
+
+
+    <div id="list"></div>
+
+
+
+  </div>
 
 
 
@@ -286,7 +470,11 @@ import {
 
 
 
-  getDoc
+  getDoc,
+
+
+
+  updateDoc
 
 
 
@@ -319,6 +507,46 @@ import {
 
 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+
+
+/* ELEMENTS */
+
+
+
+const authBox = document.getElementById("authBox");
+
+
+
+const appDiv = document.getElementById("app");
+
+
+
+const userInfo = document.getElementById("userInfo");
+
+
+
+const list = document.getElementById("list");
+
+
+
+const trickName = document.getElementById("trickName");
+
+
+
+const emailInput = document.getElementById("email");
+
+
+
+const passwordInput = document.getElementById("password");
+
+
+
+const usernameInput = document.getElementById("username");
+
+
+
+/* FIREBASE */
 
 
 
@@ -374,6 +602,10 @@ let username = "User";
 
 
 
+let tricks = [];
+
+
+
 /* SIGNUP */
 
 
@@ -382,55 +614,39 @@ window.signup = async () => {
 
 
 
-  const email = emailInput.value;
+  const cred = await createUserWithEmailAndPassword(
 
 
 
-  const pass = passwordInput.value;
+    auth,
 
 
 
-  const user = usernameInput.value;
+    emailInput.value,
 
 
 
-  const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    passwordInput.value
 
 
 
-  // try to save username (but don't break if it fails)
+  );
 
 
 
-  if (user) {
+  if (usernameInput.value) {
 
 
 
-    try {
+    await setDoc(doc(db, "users", cred.user.uid), {
 
 
 
-      await setDoc(doc(db, "users", cred.user.uid), {
+      username: usernameInput.value
 
 
 
-        username: user
-
-
-
-      });
-
-
-
-    } catch (e) {
-
-
-
-      console.log("Username save failed", e);
-
-
-
-    }
+    });
 
 
 
@@ -450,7 +666,23 @@ window.login = async () => {
 
 
 
-  await signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
+  await signInWithEmailAndPassword(
+
+
+
+    auth,
+
+
+
+    emailInput.value,
+
+
+
+    passwordInput.value
+
+
+
+  );
 
 
 
@@ -462,7 +694,7 @@ window.logout = () => signOut(auth);
 
 
 
-/* AUTH STATE */
+/* AUTH */
 
 
 
@@ -478,15 +710,7 @@ onAuthStateChanged(auth, (user) => {
 
 
 
-    app.classList.remove("hidden");
-
-
-
-    userInfo.innerText = "👤 Loading...";
-
-
-
-    // load username AFTER UI shows
+    appDiv.classList.remove("hidden");
 
 
 
@@ -506,7 +730,7 @@ onAuthStateChanged(auth, (user) => {
 
 
 
-    app.classList.add("hidden");
+    appDiv.classList.add("hidden");
 
 
 
@@ -518,7 +742,7 @@ onAuthStateChanged(auth, (user) => {
 
 
 
-/* SAFE USERNAME LOAD */
+/* USERNAME */
 
 
 
@@ -534,27 +758,11 @@ async function loadUsername(uid) {
 
 
 
-    if (snap.exists()) {
+    if (snap.exists()) username = snap.data().username;
 
 
 
-      username = snap.data().username;
-
-
-
-    }
-
-
-
-  } catch (e) {
-
-
-
-    console.log("Username load failed", e);
-
-
-
-  }
+  } catch {}
 
 
 
@@ -566,7 +774,7 @@ async function loadUsername(uid) {
 
 
 
-/* LOAD TRICKS */
+/* TRICKS */
 
 
 
@@ -578,67 +786,15 @@ function loadTricks() {
 
 
 
-    list.innerHTML = "";
+    tricks = [];
 
 
 
-    let tricks = [];
+    snap.forEach(d => tricks.push({ id: d.id, ...d.data() }));
 
 
 
-    snap.forEach(d => {
-
-
-
-      tricks.push(d.data());
-
-
-
-    });
-
-
-
-    tricks.sort((a,b)=>b.streak - a.streak);
-
-
-
-    tricks.forEach((t, i) => {
-
-
-
-      list.innerHTML += `
-
-
-
-        <div class="card">
-
-
-
-          #${i+1}<br>
-
-
-
-          👤 ${t.user}<br>
-
-
-
-          🛹 ${t.name}<br>
-
-
-
-          🔥 ${t.streak}
-
-
-
-        </div>
-
-
-
-      `;
-
-
-
-    });
+    render();
 
 
 
@@ -650,7 +806,99 @@ function loadTricks() {
 
 
 
-/* ADD */
+/* RENDER */
+
+
+
+function render() {
+
+
+
+  list.innerHTML = "";
+
+
+
+  let sorted = [...tricks].sort((a,b)=>b.best - a.best);
+
+
+
+  sorted.forEach((t,i)=>{
+
+
+
+    list.innerHTML += `
+
+
+
+      <div class="card">
+
+
+
+        <div class="rank">#${i+1}</div>
+
+
+
+        <h3>${t.name}</h3>
+
+
+
+        <div class="stats">
+
+
+
+          👤 ${t.user}<br>
+
+
+
+          🔥 Streak: ${t.streak}<br>
+
+
+
+          🏆 Best: ${t.best}<br>
+
+
+
+          📊 Total: ${t.total}
+
+
+
+        </div>
+
+
+
+        <div class="btnRow">
+
+
+
+          <button class="land" onclick="land('${t.id}',${t.streak},${t.best},${t.total})">Landed</button>
+
+
+
+          <button class="miss" onclick="miss('${t.id}')">Missed</button>
+
+
+
+        </div>
+
+
+
+      </div>
+
+
+
+    `;
+
+
+
+  });
+
+
+
+}
+
+
+
+/* ACTIONS */
 
 
 
@@ -670,7 +918,15 @@ window.addTrick = async () => {
 
 
 
-    streak: 0
+    streak: 0,
+
+
+
+    best: 0,
+
+
+
+    total: 0
 
 
 
@@ -678,7 +934,7 @@ window.addTrick = async () => {
 
 
 
-  trickName.value = "";
+  trickName.value="";
 
 
 
@@ -686,19 +942,39 @@ window.addTrick = async () => {
 
 
 
-/* INPUTS */
+window.land = async (id, streak, best, total) => {
 
 
 
-const emailInput = document.getElementById("email");
+  streak++;
 
 
 
-const passwordInput = document.getElementById("password");
+  total++;
 
 
 
-const usernameInput = document.getElementById("username");
+  if(streak>best) best=streak;
+
+
+
+  await updateDoc(doc(db,"tricks",id),{streak,best,total});
+
+
+
+};
+
+
+
+window.miss = async (id) => {
+
+
+
+  await updateDoc(doc(db,"tricks",id),{streak:0});
+
+
+
+};
 
 
 
@@ -711,4 +987,3 @@ const usernameInput = document.getElementById("username");
 
 
 </html>
-

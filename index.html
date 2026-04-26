@@ -26,7 +26,7 @@
 
 
 
-      background: linear-gradient(135deg, #0a0a0a, #000);
+      background: #0a0a0a;
 
 
 
@@ -38,31 +38,19 @@
 
 
 
-    }
-
-
-
-    h1 {
-
-
-
       text-align: center;
 
 
 
-      padding: 20px 0 5px;
-
-
-
     }
+
+
+
+    h1 { margin: 20px 0 5px; }
 
 
 
     .subtitle {
-
-
-
-      text-align: center;
 
 
 
@@ -110,7 +98,7 @@
 
 
 
-      margin-bottom: 15px;
+      margin-bottom: 10px;
 
 
 
@@ -150,11 +138,7 @@
 
 
 
-      padding: 12px 14px;
-
-
-
-      border-radius: 12px;
+      background: #00ffcc;
 
 
 
@@ -162,7 +146,11 @@
 
 
 
-      background: #00ffcc;
+      padding: 12px;
+
+
+
+      border-radius: 12px;
 
 
 
@@ -179,10 +167,6 @@
 
 
     .board {
-
-
-
-      text-align: center;
 
 
 
@@ -206,7 +190,7 @@
 
 
 
-      background: #151515;
+      background: #1c1c1c;
 
 
 
@@ -218,7 +202,11 @@
 
 
 
-      border-radius: 16px;
+      border-radius: 14px;
+
+
+
+      text-align: left;
 
 
 
@@ -235,6 +223,22 @@
 
 
       font-weight: bold;
+
+
+
+    }
+
+
+
+    .user {
+
+
+
+      color: #aaa;
+
+
+
+      font-size: 13px;
 
 
 
@@ -258,30 +262,10 @@
 
 
 
-      margin-bottom: 10px;
-
-
-
       line-height: 1.6;
 
 
 
-    }
-
-
-
-    .buttons {
-
-
-
-      display: flex;
-
-
-
-      gap: 8px;
-
-
-
       margin-bottom: 10px;
 
 
@@ -290,23 +274,23 @@
 
 
 
-    button.action {
+    button {
 
 
 
-      flex: 1;
+      padding: 8px 10px;
 
 
 
-      padding: 10px;
-
-
-
-      border-radius: 10px;
+      margin: 5px;
 
 
 
       border: none;
+
+
+
+      border-radius: 10px;
 
 
 
@@ -330,7 +314,11 @@
 
 
 
-    .videoBox {
+    .videoInput {
+
+
+
+      width: 100%;
 
 
 
@@ -350,31 +338,11 @@
 
 
 
-      border-radius: 12px;
-
-
-
       margin-top: 10px;
 
 
 
-    }
-
-
-
-    .upload {
-
-
-
-      margin-top: 5px;
-
-
-
-      font-size: 12px;
-
-
-
-      color: #aaa;
+      border-radius: 10px;
 
 
 
@@ -398,11 +366,19 @@
 
 
 
-<div class="subtitle">Track tricks • build streaks • save clips</div>
+<div class="subtitle">Leaderboard • Usernames • Videos</div>
 
 
 
 <div class="container">
+
+
+
+  <input id="username" placeholder="Enter your username">
+
+
+
+  <br><br>
 
 
 
@@ -434,7 +410,91 @@
 
 
 
-<script>
+<script type="module">
+
+
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
+
+
+import {
+
+
+
+  getFirestore,
+
+
+
+  collection,
+
+
+
+  addDoc,
+
+
+
+  onSnapshot,
+
+
+
+  doc,
+
+
+
+  updateDoc
+
+
+
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+
+/* 🔥 YOUR FIREBASE CONFIG */
+
+
+
+const firebaseConfig = {
+
+
+
+  apiKey: "AIzaSyAp9kKq_Vlwc8zFcxUltu5673NTY2IE7Nk",
+
+
+
+  authDomain: "skate-trick-tracker-e46fe.firebaseapp.com",
+
+
+
+  projectId: "skate-trick-tracker-e46fe",
+
+
+
+  storageBucket: "skate-trick-tracker-e46fe.firebasestorage.app",
+
+
+
+  messagingSenderId: "1098876020979",
+
+
+
+  appId: "1:1098876020979:web:395478b7267403da87ef86"
+
+
+
+};
+
+
+
+const app = initializeApp(firebaseConfig);
+
+
+
+const db = getFirestore(app);
+
+
+
+const col = collection(db, "tricks");
 
 
 
@@ -442,143 +502,19 @@ let tricks = [];
 
 
 
-function addTrick() {
+let currentUser = "";
 
 
 
-  let name = document.getElementById("trickName").value;
+document.getElementById("username").addEventListener("input", (e) => {
 
 
 
-  if (!name) return;
+  currentUser = e.target.value;
 
 
 
-  tricks.push({
-
-
-
-    name,
-
-
-
-    streak: 0,
-
-
-
-    best: 0,
-
-
-
-    total: 0,
-
-
-
-    video: null
-
-
-
-  });
-
-
-
-  document.getElementById("trickName").value = "";
-
-
-
-  render();
-
-
-
-}
-
-
-
-function land(i) {
-
-
-
-  tricks[i].streak++;
-
-
-
-  tricks[i].total++;
-
-
-
-  if (tricks[i].streak > tricks[i].best) {
-
-
-
-    tricks[i].best = tricks[i].streak;
-
-
-
-  }
-
-
-
-  render();
-
-
-
-}
-
-
-
-function miss(i) {
-
-
-
-  tricks[i].streak = 0;
-
-
-
-  render();
-
-
-
-}
-
-
-
-function addVideo(i, event) {
-
-
-
-  let file = event.target.files[0];
-
-
-
-  if (!file) return;
-
-
-
-  let reader = new FileReader();
-
-
-
-  reader.onload = function(e) {
-
-
-
-    tricks[i].video = e.target.result;
-
-
-
-    render();
-
-
-
-  };
-
-
-
-  reader.readAsDataURL(file);
-
-
-
-}
+});
 
 
 
@@ -610,11 +546,15 @@ function render() {
 
 
 
-        <div class="rank">#${index + 1} Rank</div>
+        <div class="rank">#${index + 1}</div>
 
 
 
-        <h2>${t.name}</h2>
+        <div class="user">👤 ${t.user}</div>
+
+
+
+        <h3>${t.name}</h3>
 
 
 
@@ -638,39 +578,23 @@ function render() {
 
 
 
-        <div class="buttons">
+        <button class="land" onclick="land('${t.id}', ${t.streak}, ${t.best}, ${t.total})">Landed</button>
 
 
 
-          <button class="action land" onclick="land(${tricks.indexOf(t)})">Landed</button>
+        <button class="miss" onclick="miss('${t.id}')">Missed</button>
 
 
 
-          <button class="action miss" onclick="miss(${tricks.indexOf(t)})">Missed</button>
+        <input class="videoInput" type="file" accept="video/*"
 
 
 
-        </div>
+          onchange="addVideo('${t.id}', event)">
 
 
 
-        <div class="videoBox">
-
-
-
-          <input type="file" accept="video/*" onchange="addVideo(${tricks.indexOf(t)}, event)">
-
-
-
-          <div class="upload">Add your clip</div>
-
-
-
-          ${t.video ? `<video controls src="${t.video}"></video>` : ""}
-
-
-
-        </div>
+        ${t.video ? `<video controls src="${t.video}"></video>` : ""}
 
 
 
@@ -690,7 +614,167 @@ function render() {
 
 
 
-render();
+window.addTrick = async function() {
+
+
+
+  let name = document.getElementById("trickName").value;
+
+
+
+  if (!name || !currentUser) return;
+
+
+
+  await addDoc(col, {
+
+
+
+    name,
+
+
+
+    user: currentUser,
+
+
+
+    streak: 0,
+
+
+
+    best: 0,
+
+
+
+    total: 0,
+
+
+
+    video: ""
+
+
+
+  });
+
+
+
+  document.getElementById("trickName").value = "";
+
+
+
+};
+
+
+
+window.land = async function(id, streak, best, total) {
+
+
+
+  const ref = doc(db, "tricks", id);
+
+
+
+  streak++;
+
+
+
+  total++;
+
+
+
+  if (streak > best) best = streak;
+
+
+
+  await updateDoc(ref, { streak, best, total });
+
+
+
+};
+
+
+
+window.miss = async function(id) {
+
+
+
+  const ref = doc(db, "tricks", id);
+
+
+
+  await updateDoc(ref, { streak: 0 });
+
+
+
+};
+
+
+
+window.addVideo = async function(id, event) {
+
+
+
+  const file = event.target.files[0];
+
+
+
+  if (!file) return;
+
+
+
+  const reader = new FileReader();
+
+
+
+  reader.onload = async function(e) {
+
+
+
+    const ref = doc(db, "tricks", id);
+
+
+
+    await updateDoc(ref, { video: e.target.result });
+
+
+
+  };
+
+
+
+  reader.readAsDataURL(file);
+
+
+
+};
+
+
+
+onSnapshot(col, (snap) => {
+
+
+
+  tricks = [];
+
+
+
+  snap.forEach(d => {
+
+
+
+    tricks.push({ id: d.id, ...d.data() });
+
+
+
+  });
+
+
+
+  render();
+
+
+
+});
 
 
 
@@ -703,6 +787,3 @@ render();
 
 
 </html>
-
-
-

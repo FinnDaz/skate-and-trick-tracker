@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 
 
@@ -22,6 +23,10 @@
 
 
 
+      margin: 0;
+
+
+
       font-family: Arial;
 
 
@@ -34,99 +39,11 @@
 
 
 
-      margin: 0;
-
-
-
-      text-align: center;
-
-
-
     }
 
 
 
-    .box {
-
-
-
-      max-width: 400px;
-
-
-
-      margin: 60px auto;
-
-
-
-      padding: 20px;
-
-
-
-      background: #171717;
-
-
-
-      border-radius: 12px;
-
-
-
-    }
-
-
-
-    input, button {
-
-
-
-      width: 100%;
-
-
-
-      padding: 12px;
-
-
-
-      margin: 6px 0;
-
-
-
-      border-radius: 10px;
-
-
-
-      border: none;
-
-
-
-    }
-
-
-
-    button {
-
-
-
-      background: #00ffcc;
-
-
-
-      font-weight: bold;
-
-
-
-      cursor: pointer;
-
-
-
-    }
-
-
-
-    .hidden { display: none; }
-
-
-
-    .topbar {
+    .app {
 
 
 
@@ -134,15 +51,7 @@
 
 
 
-      justify-content: space-between;
-
-
-
-      padding: 10px;
-
-
-
-      background: #111;
+      height: 100vh;
 
 
 
@@ -150,19 +59,131 @@
 
 
 
-    .content {
+    .sidebar {
 
 
 
-      max-width: 520px;
+      width: 240px;
 
 
 
-      margin: auto;
+      background: #151515;
+
+
+
+      padding: 10px;
+
+
+
+      display: flex;
+
+
+
+      flex-direction: column;
+
+
+
+      overflow-y: auto;
+
+
+
+    }
+
+
+
+    .btn {
+
+
+
+      width: 100%;
+
+
+
+      padding: 10px;
+
+
+
+      margin: 5px 0;
+
+
+
+      background: #222;
+
+
+
+      border: none;
+
+
+
+      color: white;
+
+
+
+      border-radius: 8px;
+
+
+
+      cursor: pointer;
+
+
+
+      text-align: left;
+
+
+
+    }
+
+
+
+    .btn.active {
+
+
+
+      background: #00ffcc;
+
+
+
+      color: black;
+
+
+
+      font-weight: bold;
+
+
+
+    }
+
+
+
+    .logout {
+
+
+
+      margin-top: auto;
+
+
+
+      background: #ff4444;
+
+
+
+    }
+
+
+
+    .main {
+
+
+
+      flex: 1;
 
 
 
       padding: 15px;
+
+
+
+      overflow-y: auto;
 
 
 
@@ -178,19 +199,15 @@
 
 
 
-      margin: 12px 0;
+      padding: 12px;
 
 
 
-      padding: 15px;
+      margin: 10px 0;
 
 
 
-      border-radius: 12px;
-
-
-
-      text-align: left;
+      border-radius: 10px;
 
 
 
@@ -198,15 +215,27 @@
 
 
 
-    .rank {
+    input, select {
 
 
 
-      color: #00ffcc;
+      padding: 8px;
 
 
 
-      font-weight: bold;
+      width: 100%;
+
+
+
+      margin: 5px 0;
+
+
+
+      border-radius: 6px;
+
+
+
+      border: none;
 
 
 
@@ -214,15 +243,15 @@
 
 
 
-    .stats {
+    button.action {
 
 
 
-      color: #ccc;
+      padding: 6px 10px;
 
 
 
-      font-size: 14px;
+      margin-right: 5px;
 
 
 
@@ -230,99 +259,19 @@
 
 
 
-      line-height: 1.4;
-
-
-
-    }
-
-
-
-    .btnRow {
-
-
-
-      display: flex;
-
-
-
-      gap: 8px;
-
-
-
-      margin-top: 10px;
-
-
-
-    }
-
-
-
-    .land {
-
-
-
-      background: #00c853;
-
-
-
-      flex: 1;
-
-
-
-      padding: 8px;
-
-
-
-      border-radius: 8px;
-
-
-
       border: none;
 
 
 
-      color: white;
+      border-radius: 6px;
 
 
 
-      font-weight: bold;
+      background: #00ffcc;
 
 
 
-    }
-
-
-
-    .miss {
-
-
-
-      background: #d50000;
-
-
-
-      flex: 1;
-
-
-
-      padding: 8px;
-
-
-
-      border-radius: 8px;
-
-
-
-      border: none;
-
-
-
-      color: white;
-
-
-
-      font-weight: bold;
+      cursor: pointer;
 
 
 
@@ -342,11 +291,11 @@
 
 
 
-<!-- LOGIN -->
+<!-- AUTH -->
 
 
 
-<div id="authBox" class="box">
+<div id="authBox">
 
 
 
@@ -354,7 +303,7 @@
 
 
 
-  <input id="username" placeholder="Username (signup)">
+  <input id="username" placeholder="Username">
 
 
 
@@ -382,19 +331,79 @@
 
 
 
-<div id="app" class="hidden">
+<div id="app" class="app" style="display:none;">
 
 
 
-  <div class="topbar">
+  <!-- SIDEBAR -->
 
 
 
-    <div>🛹 Skate Tracker</div>
+  <div class="sidebar">
 
 
 
-    <button onclick="logout()">Logout</button>
+    <button class="btn" onclick="setView('leaderboard')">🏆 Leaderboard</button>
+
+
+
+    <button class="btn" onclick="setView('profile')">👤 Your Profile</button>
+
+
+
+    <div id="trickList"></div>
+
+
+
+    <hr style="border:1px solid #333;">
+
+
+
+    <input id="trickName" placeholder="Add trick">
+
+
+
+    <select id="category">
+
+
+
+      <option value="Flatground">Flatground</option>
+
+
+
+      <option value="Grind">Grind</option>
+
+
+
+    </select>
+
+
+
+    <select id="difficulty">
+
+
+
+      <option value="Beginner">Beginner</option>
+
+
+
+      <option value="Intermediate">Intermediate</option>
+
+
+
+      <option value="Advanced">Advanced</option>
+
+
+
+    </select>
+
+
+
+    <button class="btn" onclick="addTrick()">Add Trick</button>
+
+
+
+    <button class="btn logout" onclick="logout()">Logout</button>
 
 
 
@@ -402,27 +411,19 @@
 
 
 
-  <div class="content">
+  <!-- MAIN -->
 
 
 
-    <h3 id="userInfo">👤 Loading...</h3>
+  <div class="main">
 
 
 
-    <input id="trickName" placeholder="Enter trick name">
+    <h2 id="title">🏆 Leaderboard</h2>
 
 
 
-    <button onclick="addTrick()">Add Trick</button>
-
-
-
-    <h3>🏆 Leaderboard</h3>
-
-
-
-    <div id="list"></div>
+    <div id="board"></div>
 
 
 
@@ -458,7 +459,7 @@ import {
 
 
 
-  onSnapshot,
+  getDocs,
 
 
 
@@ -510,42 +511,6 @@ import {
 
 
 
-/* ELEMENTS */
-
-
-
-const authBox = document.getElementById("authBox");
-
-
-
-const appDiv = document.getElementById("app");
-
-
-
-const userInfo = document.getElementById("userInfo");
-
-
-
-const list = document.getElementById("list");
-
-
-
-const trickName = document.getElementById("trickName");
-
-
-
-const emailInput = document.getElementById("email");
-
-
-
-const passwordInput = document.getElementById("password");
-
-
-
-const usernameInput = document.getElementById("username");
-
-
-
 /* FIREBASE */
 
 
@@ -594,103 +559,15 @@ const auth = getAuth(app);
 
 
 
-const col = collection(db, "tricks");
+/* STATE */
 
 
 
-let username = "User";
+let view = "leaderboard";
 
 
 
-let tricks = [];
-
-
-
-/* SIGNUP */
-
-
-
-window.signup = async () => {
-
-
-
-  const cred = await createUserWithEmailAndPassword(
-
-
-
-    auth,
-
-
-
-    emailInput.value,
-
-
-
-    passwordInput.value
-
-
-
-  );
-
-
-
-  if (usernameInput.value) {
-
-
-
-    await setDoc(doc(db, "users", cred.user.uid), {
-
-
-
-      username: usernameInput.value
-
-
-
-    });
-
-
-
-  }
-
-
-
-};
-
-
-
-/* LOGIN */
-
-
-
-window.login = async () => {
-
-
-
-  await signInWithEmailAndPassword(
-
-
-
-    auth,
-
-
-
-    emailInput.value,
-
-
-
-    passwordInput.value
-
-
-
-  );
-
-
-
-};
-
-
-
-window.logout = () => signOut(auth);
+let selected = null;
 
 
 
@@ -698,43 +575,59 @@ window.logout = () => signOut(auth);
 
 
 
-onAuthStateChanged(auth, (user) => {
+window.signup = async () => {
 
 
 
-  if (user) {
+  const cred = await createUserWithEmailAndPassword(auth, email.value, password.value);
 
 
 
-    authBox.classList.add("hidden");
+  await setDoc(doc(db, "users", cred.user.uid), {
 
 
 
-    appDiv.classList.remove("hidden");
+    username: username.value
 
 
 
-    loadUsername(user.uid);
+  });
 
 
 
-    loadTricks();
+};
 
 
 
-  } else {
+window.login = () => signInWithEmailAndPassword(auth, email.value, password.value);
 
 
 
-    authBox.classList.remove("hidden");
+window.logout = () => signOut(auth);
 
 
 
-    appDiv.classList.add("hidden");
+/* AUTH STATE */
 
 
 
-  }
+onAuthStateChanged(auth, () => {
+
+
+
+  document.getElementById("authBox").style.display = "none";
+
+
+
+  document.getElementById("app").style.display = "flex";
+
+
+
+  loadTricks();
+
+
+
+  loadBoard();
 
 
 
@@ -742,59 +635,155 @@ onAuthStateChanged(auth, (user) => {
 
 
 
-/* USERNAME */
+/* VIEW */
 
 
 
-async function loadUsername(uid) {
+window.setView = (v) => {
 
 
 
-  try {
+  view = v;
 
 
 
-    const snap = await getDoc(doc(db, "users", uid));
+  document.getElementById("title").innerText =
 
 
 
-    if (snap.exists()) username = snap.data().username;
+    v === "leaderboard" ? "🏆 Leaderboard" : "👤 Your Profile";
 
 
 
-  } catch {}
+  loadBoard();
 
 
 
-  userInfo.innerText = "👤 " + username;
+};
 
 
 
-}
+/* ADD TRICK */
 
 
 
-/* TRICKS */
+window.addTrick = async () => {
 
 
 
-function loadTricks() {
+  const user = auth.currentUser;
 
 
 
-  onSnapshot(col, (snap) => {
+  await addDoc(collection(db, "users", user.uid, "tricks"), {
 
 
 
-    tricks = [];
+    name: trickName.value,
 
 
 
-    snap.forEach(d => tricks.push({ id: d.id, ...d.data() }));
+    category: category.value,
 
 
 
-    render();
+    difficulty: difficulty.value,
+
+
+
+    lands: 0,
+
+
+
+    misses: 0,
+
+
+
+    streak: 0,
+
+
+
+    best: 0,
+
+
+
+    points: 0
+
+
+
+  });
+
+
+
+  trickName.value = "";
+
+
+
+  loadTricks();
+
+
+
+};
+
+
+
+/* LOAD TRICKS */
+
+
+
+async function loadTricks() {
+
+
+
+  const user = auth.currentUser;
+
+
+
+  const snap = await getDocs(collection(db, "users", user.uid, "tricks"));
+
+
+
+  const list = document.getElementById("trickList");
+
+
+
+  list.innerHTML = "";
+
+
+
+  snap.forEach(t => {
+
+
+
+    const b = document.createElement("button");
+
+
+
+    b.className = "btn";
+
+
+
+    b.innerText = t.data().name;
+
+
+
+    b.onclick = () => {
+
+
+
+      selected = t.data().name;
+
+
+
+      loadBoard();
+
+
+
+    };
+
+
+
+    list.appendChild(b);
 
 
 
@@ -806,27 +795,123 @@ function loadTricks() {
 
 
 
+/* LOAD BOARD */
+
+
+
+async function loadBoard() {
+
+
+
+  const usersSnap = await getDocs(collection(db, "users"));
+
+
+
+  let users = [];
+
+
+
+  for (const u of usersSnap.docs) {
+
+
+
+    const uid = u.id;
+
+
+
+    const uname = u.data().username;
+
+
+
+    const tricksSnap = await getDocs(collection(db, "users", uid, "tricks"));
+
+
+
+    let total = 0;
+
+
+
+    let tricks = [];
+
+
+
+    tricksSnap.forEach(t => {
+
+
+
+      const d = t.data();
+
+
+
+      if (!selected || d.name === selected) {
+
+
+
+        total += d.points || 0;
+
+
+
+        tricks.push({ uid, id: t.id, user: uname, ...d });
+
+
+
+      }
+
+
+
+    });
+
+
+
+    if (view === "leaderboard" || uid === auth.currentUser.uid) {
+
+
+
+      users.push({ uid, user: uname, total, tricks });
+
+
+
+    }
+
+
+
+  }
+
+
+
+  render(users);
+
+
+
+}
+
+
+
 /* RENDER */
 
 
 
-function render() {
+function render(users) {
 
 
 
-  list.innerHTML = "";
+  const board = document.getElementById("board");
 
 
 
-  let sorted = [...tricks].sort((a,b)=>b.best - a.best);
+  board.innerHTML = "";
 
 
 
-  sorted.forEach((t,i)=>{
+  users.sort((a,b)=>b.total-a.total);
 
 
 
-    list.innerHTML += `
+  users.forEach((u,i)=>{
+
+
+
+    board.innerHTML += `
 
 
 
@@ -834,51 +919,63 @@ function render() {
 
 
 
-        <div class="rank">#${i+1}</div>
+        #${i+1} 👤 ${u.user}<br>
 
 
 
-        <h3>${t.name}</h3>
+        🏆 Total Points: ${u.total}<br><br>
 
 
 
-        <div class="stats">
+        ${u.tricks.map(t => `
 
 
 
-          👤 ${t.user}<br>
+          🛹 ${t.name}<br>
 
 
 
-          🔥 Streak: ${t.streak}<br>
+          🔥 Streak: ${t.streak || 0}<br>
 
 
 
-          🏆 Best: ${t.best}<br>
+          🏅 Best: ${t.best || 0}<br>
 
 
 
-          📊 Total: ${t.total}
+          🏁 Lands: ${t.lands || 0}<br>
 
 
 
-        </div>
+          ❌ Misses: ${t.misses || 0}<br>
 
 
 
-        <div class="btnRow">
+          ⭐ Points: ${t.points || 0}<br>
 
 
 
-          <button class="land" onclick="land('${t.id}',${t.streak},${t.best},${t.total})">Landed</button>
+          ${auth.currentUser?.uid === t.uid ? `
 
 
 
-          <button class="miss" onclick="miss('${t.id}')">Missed</button>
+            <button class="action" onclick="land('${t.uid}','${t.id}')">Land</button>
 
 
 
-        </div>
+            <button class="action" onclick="miss('${t.uid}','${t.id}')">Miss</button>
+
+
+
+          ` : ""}
+
+
+
+          <hr>
+
+
+
+        `).join("")}
 
 
 
@@ -898,35 +995,51 @@ function render() {
 
 
 
-/* ACTIONS */
+/* LAND */
 
 
 
-window.addTrick = async () => {
+window.land = async (uid, id) => {
 
 
 
-  await addDoc(col, {
+  const ref = doc(db, "users", uid, "tricks", id);
 
 
 
-    name: trickName.value,
+  const snap = await getDoc(ref);
 
 
 
-    user: username,
+  const d = snap.data();
 
 
 
-    streak: 0,
+  const newStreak = (d.streak || 0) + 1;
 
 
 
-    best: 0,
+  const addPoints = 1 + newStreak * 2;
 
 
 
-    total: 0
+  await updateDoc(ref, {
+
+
+
+    lands: (d.lands || 0) + 1,
+
+
+
+    streak: newStreak,
+
+
+
+    best: Math.max(newStreak, d.best || 0),
+
+
+
+    points: (d.points || 0) + addPoints
 
 
 
@@ -934,7 +1047,7 @@ window.addTrick = async () => {
 
 
 
-  trickName.value="";
+  loadBoard();
 
 
 
@@ -942,35 +1055,47 @@ window.addTrick = async () => {
 
 
 
-window.land = async (id, streak, best, total) => {
+/* MISS */
 
 
 
-  streak++;
+window.miss = async (uid, id) => {
 
 
 
-  total++;
+  const ref = doc(db, "users", uid, "tricks", id);
 
 
 
-  if(streak>best) best=streak;
+  const snap = await getDoc(ref);
 
 
 
-  await updateDoc(doc(db,"tricks",id),{streak,best,total});
+  const d = snap.data();
 
 
 
-};
+  await updateDoc(ref, {
 
 
 
-window.miss = async (id) => {
+    misses: (d.misses || 0) + 1,
 
 
 
-  await updateDoc(doc(db,"tricks",id),{streak:0});
+    streak: 0,
+
+
+
+    points: Math.max(0, (d.points || 0) - 1)
+
+
+
+  });
+
+
+
+  loadBoard();
 
 
 
@@ -987,3 +1112,4 @@ window.miss = async (id) => {
 
 
 </html>
+

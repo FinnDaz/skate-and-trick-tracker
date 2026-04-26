@@ -26,7 +26,7 @@
 
 
 
-      background: #111;
+      background: linear-gradient(135deg, #0f0f0f, #000);
 
 
 
@@ -82,7 +82,7 @@
 
 
 
-      padding: 10px;
+      padding: 12px;
 
 
 
@@ -90,7 +90,7 @@
 
 
 
-      border-radius: 8px;
+      border-radius: 10px;
 
 
 
@@ -106,7 +106,7 @@
 
 
 
-      padding: 8px 10px;
+      padding: 10px 12px;
 
 
 
@@ -114,7 +114,7 @@
 
 
 
-      border-radius: 8px;
+      border-radius: 10px;
 
 
 
@@ -150,7 +150,7 @@
 
 
 
-      background: #222;
+      background: #1e1e1e;
 
 
 
@@ -162,7 +162,7 @@
 
 
 
-      border-radius: 12px;
+      border-radius: 14px;
 
 
 
@@ -378,10 +378,6 @@ function render() {
 
 
 
-  // sort by best streak (leaderboard)
-
-
-
   let sorted = [...tricks].sort((a, b) => b.best - a.best);
 
 
@@ -402,15 +398,15 @@ function render() {
 
 
 
-        <p>🔥 Current Streak: ${t.streak}</p>
+        <p>🔥 Streak: ${t.streak}</p>
 
 
 
-        <p>🏆 Best Streak: ${t.best}</p>
+        <p>🏆 Best: ${t.best}</p>
 
 
 
-        <p>Total Landed: ${t.count}</p>
+        <p>Total: ${t.count}</p>
 
 
 

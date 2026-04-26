@@ -26,7 +26,7 @@
 
 
 
-      background: linear-gradient(135deg, #0a0a0a, #000);
+      background: #0a0a0a;
 
 
 
@@ -46,31 +46,7 @@
 
 
 
-    h1 {
-
-
-
-      margin: 20px 0 5px;
-
-
-
-    }
-
-
-
-    .subtitle {
-
-
-
-      color: #888;
-
-
-
-      margin-bottom: 10px;
-
-
-
-    }
+    h1 { margin: 20px 0; }
 
 
 
@@ -78,7 +54,7 @@
 
 
 
-      max-width: 520px;
+      max-width: 500px;
 
 
 
@@ -98,19 +74,11 @@
 
 
 
+      width: 100%;
+
+
+
       padding: 12px;
-
-
-
-      border-radius: 12px;
-
-
-
-      border: none;
-
-
-
-      outline: none;
 
 
 
@@ -118,155 +86,11 @@
 
 
 
-      width: 100%;
-
-
-
-      box-sizing: border-box;
-
-
-
-    }
-
-
-
-    .inputRow {
-
-
-
-      display: flex;
-
-
-
-      gap: 10px;
-
-
-
-    }
-
-
-
-    .add {
-
-
-
-      background: #00ffcc;
+      border-radius: 10px;
 
 
 
       border: none;
-
-
-
-      padding: 12px;
-
-
-
-      border-radius: 12px;
-
-
-
-      font-weight: bold;
-
-
-
-      cursor: pointer;
-
-
-
-      width: 100%;
-
-
-
-      margin-top: 5px;
-
-
-
-    }
-
-
-
-    .board {
-
-
-
-      color: #00ffcc;
-
-
-
-      margin: 15px 0;
-
-
-
-      font-weight: bold;
-
-
-
-    }
-
-
-
-    .trick {
-
-
-
-      background: #151515;
-
-
-
-      margin: 12px 0;
-
-
-
-      padding: 15px;
-
-
-
-      border-radius: 14px;
-
-
-
-      text-align: left;
-
-
-
-    }
-
-
-
-    .user {
-
-
-
-      font-size: 13px;
-
-
-
-      color: #aaa;
-
-
-
-    }
-
-
-
-    .stats {
-
-
-
-      font-size: 14px;
-
-
-
-      color: #ccc;
-
-
-
-      line-height: 1.6;
-
-
-
-      margin: 8px 0;
 
 
 
@@ -278,11 +102,15 @@
 
 
 
-      padding: 8px 10px;
+      width: 100%;
 
 
 
-      margin: 5px 5px 5px 0;
+      padding: 12px;
+
+
+
+      margin-top: 5px;
 
 
 
@@ -291,6 +119,10 @@
 
 
       border-radius: 10px;
+
+
+
+      background: #00ffcc;
 
 
 
@@ -306,23 +138,19 @@
 
 
 
-    .land { background: #00c853; color: white; }
+    .trick {
 
 
 
-    .miss { background: #d50000; color: white; }
-
-
-
-    video {
-
-
-
-      width: 100%;
+      background: #1c1c1c;
 
 
 
       margin-top: 10px;
+
+
+
+      padding: 10px;
 
 
 
@@ -330,15 +158,7 @@
 
 
 
-    }
-
-
-
-    .file {
-
-
-
-      margin-top: 10px;
+      text-align: left;
 
 
 
@@ -362,39 +182,23 @@
 
 
 
-<div class="subtitle">Leaderboard • Streaks • Videos • Friends</div>
-
-
-
 <div class="container">
 
 
 
-  <input id="username" placeholder="Enter username">
+  <input id="username" placeholder="Username">
 
 
 
-  <div class="inputRow">
+  <input id="trickName" placeholder="Trick name">
 
 
 
-    <input id="trickName" placeholder="Enter trick name">
+  <button onclick="addTrick()">Add Trick</button>
 
 
 
-  </div>
-
-
-
-  <button class="add" onclick="addTrick()">Add Trick</button>
-
-
-
-  <div class="board">🏆 Leaderboard</div>
-
-
-
-  <div id="trickList"></div>
+  <div id="list"></div>
 
 
 
@@ -426,15 +230,7 @@ import {
 
 
 
-  onSnapshot,
-
-
-
-  doc,
-
-
-
-  updateDoc
+  onSnapshot
 
 
 
@@ -442,7 +238,7 @@ import {
 
 
 
-/* 🔥 YOUR FIREBASE CONFIG */
+/* 🔥 YOUR FIREBASE */
 
 
 
@@ -494,19 +290,47 @@ let tricks = [];
 
 
 
-let currentUser = "";
+window.addTrick = async function () {
 
 
 
-document.getElementById("username").addEventListener("input", e => {
+  let user = document.getElementById("username").value;
 
 
 
-  currentUser = e.target.value;
+  let name = document.getElementById("trickName").value;
 
 
 
-});
+  if (!user || !name) return;
+
+
+
+  await addDoc(col, {
+
+
+
+    user,
+
+
+
+    name,
+
+
+
+    streak: 0
+
+
+
+  });
+
+
+
+  document.getElementById("trickName").value = "";
+
+
+
+};
 
 
 
@@ -514,7 +338,7 @@ function render() {
 
 
 
-  let list = document.getElementById("trickList");
+  let list = document.getElementById("list");
 
 
 
@@ -522,11 +346,7 @@ function render() {
 
 
 
-  let sorted = [...tricks].sort((a, b) => b.best - a.best);
-
-
-
-  sorted.forEach((t, index) => {
+  tricks.forEach(t => {
 
 
 
@@ -538,51 +358,15 @@ function render() {
 
 
 
-        <div class="user">👤 ${t.user}</div>
+        👤 ${t.user}<br>
 
 
 
-        <h3>#${index + 1} ${t.name}</h3>
+        🛹 ${t.name}<br>
 
 
 
-        <div class="stats">
-
-
-
-          🔥 Streak: ${t.streak}<br>
-
-
-
-          🏆 Best: ${t.best}<br>
-
-
-
-          📊 Total: ${t.total}
-
-
-
-        </div>
-
-
-
-        <button class="land" onclick="land('${t.id}', ${t.streak}, ${t.best}, ${t.total})">Landed</button>
-
-
-
-        <button class="miss" onclick="miss('${t.id}')">Missed</button>
-
-
-
-        <input class="file" type="file" accept="video/*"
-
-
-
-          onchange="addVideo('${t.id}', event)">
-
-
-
-        ${t.video ? `<video controls src="${t.video}"></video>` : ""}
+        🔥 ${t.streak}
 
 
 
@@ -602,142 +386,6 @@ function render() {
 
 
 
-window.addTrick = async function() {
-
-
-
-  let name = document.getElementById("trickName").value;
-
-
-
-  if (!name || !currentUser) return;
-
-
-
-  await addDoc(col, {
-
-
-
-    name,
-
-
-
-    user: currentUser,
-
-
-
-    streak: 0,
-
-
-
-    best: 0,
-
-
-
-    total: 0,
-
-
-
-    video: ""
-
-
-
-  });
-
-
-
-  document.getElementById("trickName").value = "";
-
-
-
-};
-
-
-
-window.land = async function(id, streak, best, total) {
-
-
-
-  const ref = doc(db, "tricks", id);
-
-
-
-  streak++;
-
-
-
-  total++;
-
-
-
-  if (streak > best) best = streak;
-
-
-
-  await updateDoc(ref, { streak, best, total });
-
-
-
-};
-
-
-
-window.miss = async function(id) {
-
-
-
-  const ref = doc(db, "tricks", id);
-
-
-
-  await updateDoc(ref, { streak: 0 });
-
-
-
-};
-
-
-
-window.addVideo = async function(id, event) {
-
-
-
-  const file = event.target.files[0];
-
-
-
-  if (!file) return;
-
-
-
-  const reader = new FileReader();
-
-
-
-  reader.onload = async function(e) {
-
-
-
-    const ref = doc(db, "tricks", id);
-
-
-
-    await updateDoc(ref, { video: e.target.result });
-
-
-
-  };
-
-
-
-  reader.readAsDataURL(file);
-
-
-
-};
-
-
-
 onSnapshot(col, (snap) => {
 
 
@@ -746,15 +394,7 @@ onSnapshot(col, (snap) => {
 
 
 
-  snap.forEach(d => {
-
-
-
-    tricks.push({ id: d.id, ...d.data() });
-
-
-
-  });
+  snap.forEach(d => tricks.push(d.data()));
 
 
 
@@ -775,5 +415,7 @@ onSnapshot(col, (snap) => {
 
 
 </html>
+
+
 
 

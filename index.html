@@ -46,18 +46,6 @@
 
 
 
-    h1 {
-
-
-
-      margin-top: 20px;
-
-
-
-    }
-
-
-
     .container {
 
 
@@ -90,11 +78,11 @@
 
 
 
-      border: none;
-
-
-
       border-radius: 8px;
+
+
+
+      border: none;
 
 
 
@@ -106,7 +94,7 @@
 
 
 
-      padding: 12px;
+      padding: 10px;
 
 
 
@@ -114,11 +102,11 @@
 
 
 
-      border: none;
-
-
-
       border-radius: 8px;
+
+
+
+      border: none;
 
 
 
@@ -134,15 +122,7 @@
 
 
 
-    .add-btn {
-
-
-
-      background: #00ffcc;
-
-
-
-    }
+    .add-btn { background: #00ffcc; }
 
 
 
@@ -166,39 +146,31 @@
 
 
 
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
-
-
-
     }
 
 
 
-    .land {
+    .land { background: #00c853; color: white; }
 
 
 
-      background: #00c853;
+    .miss { background: #d50000; color: white; }
 
 
 
-      color: white;
+    video {
 
 
 
-    }
+      width: 100%;
 
 
 
-    .miss {
+      margin-top: 10px;
 
 
 
-      background: #d50000;
-
-
-
-      color: white;
+      border-radius: 10px;
 
 
 
@@ -218,7 +190,7 @@
 
 
 
-<h1>🛹 Skate Progress Tracker</h1>
+<h1>🛹 Skate Tracker</h1>
 
 
 
@@ -274,7 +246,31 @@ function addTrick() {
 
 
 
-  tricks.push({ name: name, count: 0, streak: 0, best: 0 });
+  tricks.push({ 
+
+
+
+    name: name, 
+
+
+
+    count: 0, 
+
+
+
+    streak: 0, 
+
+
+
+    best: 0,
+
+
+
+    video: null
+
+
+
+  });
 
 
 
@@ -294,31 +290,23 @@ function addTrick() {
 
 
 
-function landTrick(index) {
+function landTrick(i) {
 
 
 
-  let trick = tricks[index];
+  let t = tricks[i];
 
 
 
-  trick.count++;
+  t.count++;
 
 
 
-  trick.streak++;
+  t.streak++;
 
 
 
-  if (trick.streak > trick.best) {
-
-
-
-    trick.best = trick.streak;
-
-
-
-  }
+  if (t.streak > t.best) t.best = t.streak;
 
 
 
@@ -334,11 +322,11 @@ function landTrick(index) {
 
 
 
-function failTrick(index) {
+function failTrick(i) {
 
 
 
-  tricks[index].streak = 0;
+  tricks[i].streak = 0;
 
 
 
@@ -347,6 +335,50 @@ function failTrick(index) {
 
 
   render();
+
+
+
+}
+
+
+
+function addVideo(i, event) {
+
+
+
+  let file = event.target.files[0];
+
+
+
+  if (!file) return;
+
+
+
+  let reader = new FileReader();
+
+
+
+  reader.onload = function(e) {
+
+
+
+    tricks[i].video = e.target.result;
+
+
+
+    save();
+
+
+
+    render();
+
+
+
+  };
+
+
+
+  reader.readAsDataURL(file);
 
 
 
@@ -366,7 +398,7 @@ function render() {
 
 
 
-  tricks.forEach((trick, index) => {
+  tricks.forEach((t, i) => {
 
 
 
@@ -378,27 +410,39 @@ function render() {
 
 
 
-        <h2>${trick.name}</h2>
+        <h2>${t.name}</h2>
 
 
 
-        <p>Total: ${trick.count}</p>
+        <p>Total: ${t.count}</p>
 
 
 
-        <p>🔥 Streak: ${trick.streak}</p>
+        <p>🔥 Streak: ${t.streak}</p>
 
 
 
-        <p>🏆 Best: ${trick.best}</p>
+        <p>🏆 Best: ${t.best}</p>
 
 
 
-        <button class="land" onclick="landTrick(${index})">Landed</button>
+        <button class="land" onclick="landTrick(${i})">Landed</button>
 
 
 
-        <button class="miss" onclick="failTrick(${index})">Missed</button>
+        <button class="miss" onclick="failTrick(${i})">Missed</button>
+
+
+
+        <br><br>
+
+
+
+        <input type="file" accept="video/*" onchange="addVideo(${i}, event)">
+
+
+
+        ${t.video ? `<video controls src="${t.video}"></video>` : ""}
 
 
 

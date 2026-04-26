@@ -26,7 +26,7 @@
 
 
 
-      background: #0a0a0a;
+      background: #0b0b0b;
 
 
 
@@ -46,7 +46,31 @@
 
 
 
-    h1 { margin: 20px 0; }
+    h1 {
+
+
+
+      margin: 20px 0 5px;
+
+
+
+    }
+
+
+
+    .subtitle {
+
+
+
+      color: #888;
+
+
+
+      margin-bottom: 10px;
+
+
+
+    }
 
 
 
@@ -54,7 +78,7 @@
 
 
 
-      max-width: 500px;
+      max-width: 520px;
 
 
 
@@ -82,15 +106,23 @@
 
 
 
-      margin: 5px 0;
+      margin: 6px 0;
 
 
 
-      border-radius: 10px;
+      border-radius: 12px;
 
 
 
       border: none;
+
+
+
+      outline: none;
+
+
+
+      box-sizing: border-box;
 
 
 
@@ -118,7 +150,7 @@
 
 
 
-      border-radius: 10px;
+      border-radius: 12px;
 
 
 
@@ -138,19 +170,143 @@
 
 
 
-    .trick {
+    .board {
 
 
 
-      background: #1c1c1c;
+      margin: 15px 0;
 
 
 
-      margin-top: 10px;
+      color: #00ffcc;
 
 
 
-      padding: 10px;
+      font-weight: bold;
+
+
+
+    }
+
+
+
+    .card {
+
+
+
+      background: #171717;
+
+
+
+      margin: 12px 0;
+
+
+
+      padding: 15px;
+
+
+
+      border-radius: 14px;
+
+
+
+      text-align: left;
+
+
+
+    }
+
+
+
+    .rank {
+
+
+
+      color: #00ffcc;
+
+
+
+      font-weight: bold;
+
+
+
+      margin-bottom: 5px;
+
+
+
+    }
+
+
+
+    .user {
+
+
+
+      font-size: 13px;
+
+
+
+      color: #aaa;
+
+
+
+    }
+
+
+
+    .stats {
+
+
+
+      font-size: 14px;
+
+
+
+      color: #ccc;
+
+
+
+      margin: 8px 0;
+
+
+
+      line-height: 1.5;
+
+
+
+    }
+
+
+
+    .btnRow {
+
+
+
+      display: flex;
+
+
+
+      gap: 8px;
+
+
+
+    }
+
+
+
+    .land {
+
+
+
+      background: #00c853;
+
+
+
+      color: white;
+
+
+
+      flex: 1;
 
 
 
@@ -158,7 +314,87 @@
 
 
 
-      text-align: left;
+      padding: 8px;
+
+
+
+      border: none;
+
+
+
+      font-weight: bold;
+
+
+
+    }
+
+
+
+    .miss {
+
+
+
+      background: #d50000;
+
+
+
+      color: white;
+
+
+
+      flex: 1;
+
+
+
+      border-radius: 10px;
+
+
+
+      padding: 8px;
+
+
+
+      border: none;
+
+
+
+      font-weight: bold;
+
+
+
+    }
+
+
+
+    video {
+
+
+
+      width: 100%;
+
+
+
+      margin-top: 10px;
+
+
+
+      border-radius: 10px;
+
+
+
+    }
+
+
+
+    .file {
+
+
+
+      margin-top: 10px;
+
+
+
+      width: 100%;
 
 
 
@@ -182,19 +418,27 @@
 
 
 
+<div class="subtitle">Leaderboard • Videos • Multiplayer</div>
+
+
+
 <div class="container">
 
 
 
-  <input id="username" placeholder="Username">
+  <input id="username" placeholder="Enter username">
 
 
 
-  <input id="trickName" placeholder="Trick name">
+  <input id="trickName" placeholder="Enter trick name">
 
 
 
   <button onclick="addTrick()">Add Trick</button>
+
+
+
+  <div class="board">🏆 Leaderboard</div>
 
 
 
@@ -230,7 +474,15 @@ import {
 
 
 
-  onSnapshot
+  onSnapshot,
+
+
+
+  doc,
+
+
+
+  updateDoc
 
 
 
@@ -238,7 +490,7 @@ import {
 
 
 
-/* 🔥 YOUR FIREBASE */
+/* 🔥 YOUR FIREBASE CONFIG */
 
 
 
@@ -290,47 +542,19 @@ let tricks = [];
 
 
 
-window.addTrick = async function () {
+let currentUser = "";
 
 
 
-  let user = document.getElementById("username").value;
+document.getElementById("username").addEventListener("input", e => {
 
 
 
-  let name = document.getElementById("trickName").value;
+  currentUser = e.target.value;
 
 
 
-  if (!user || !name) return;
-
-
-
-  await addDoc(col, {
-
-
-
-    user,
-
-
-
-    name,
-
-
-
-    streak: 0
-
-
-
-  });
-
-
-
-  document.getElementById("trickName").value = "";
-
-
-
-};
+});
 
 
 
@@ -346,7 +570,11 @@ function render() {
 
 
 
-  tricks.forEach(t => {
+  let sorted = [...tricks].sort((a, b) => b.best - a.best);
+
+
+
+  sorted.forEach((t, i) => {
 
 
 
@@ -354,19 +582,67 @@ function render() {
 
 
 
-      <div class="trick">
+      <div class="card">
 
 
 
-        👤 ${t.user}<br>
+        <div class="rank">#${i + 1}</div>
 
 
 
-        🛹 ${t.name}<br>
+        <div class="user">👤 ${t.user}</div>
 
 
 
-        🔥 ${t.streak}
+        <h3>${t.name}</h3>
+
+
+
+        <div class="stats">
+
+
+
+          🔥 Streak: ${t.streak}<br>
+
+
+
+          🏆 Best: ${t.best}<br>
+
+
+
+          📊 Total: ${t.total}
+
+
+
+        </div>
+
+
+
+        <div class="btnRow">
+
+
+
+          <button class="land" onclick="land('${t.id}', ${t.streak}, ${t.best}, ${t.total})">Landed</button>
+
+
+
+          <button class="miss" onclick="miss('${t.id}')">Missed</button>
+
+
+
+        </div>
+
+
+
+        <input class="file" type="file" accept="video/*"
+
+
+
+          onchange="addVideo('${t.id}', event)">
+
+
+
+        ${t.video ? `<video controls src="${t.video}"></video>` : ""}
 
 
 
@@ -386,6 +662,142 @@ function render() {
 
 
 
+window.addTrick = async function() {
+
+
+
+  let name = document.getElementById("trickName").value;
+
+
+
+  if (!name || !currentUser) return;
+
+
+
+  await addDoc(col, {
+
+
+
+    name,
+
+
+
+    user: currentUser,
+
+
+
+    streak: 0,
+
+
+
+    best: 0,
+
+
+
+    total: 0,
+
+
+
+    video: ""
+
+
+
+  });
+
+
+
+  document.getElementById("trickName").value = "";
+
+
+
+};
+
+
+
+window.land = async function(id, streak, best, total) {
+
+
+
+  const ref = doc(db, "tricks", id);
+
+
+
+  streak++;
+
+
+
+  total++;
+
+
+
+  if (streak > best) best = streak;
+
+
+
+  await updateDoc(ref, { streak, best, total });
+
+
+
+};
+
+
+
+window.miss = async function(id) {
+
+
+
+  const ref = doc(db, "tricks", id);
+
+
+
+  await updateDoc(ref, { streak: 0 });
+
+
+
+};
+
+
+
+window.addVideo = async function(id, event) {
+
+
+
+  const file = event.target.files[0];
+
+
+
+  if (!file) return;
+
+
+
+  const reader = new FileReader();
+
+
+
+  reader.onload = async function(e) {
+
+
+
+    const ref = doc(db, "tricks", id);
+
+
+
+    await updateDoc(ref, { video: e.target.result });
+
+
+
+  };
+
+
+
+  reader.readAsDataURL(file);
+
+
+
+};
+
+
+
 onSnapshot(col, (snap) => {
 
 
@@ -394,7 +806,15 @@ onSnapshot(col, (snap) => {
 
 
 
-  snap.forEach(d => tricks.push(d.data()));
+  snap.forEach(d => {
+
+
+
+    tricks.push({ id: d.id, ...d.data() });
+
+
+
+  });
 
 
 
@@ -415,7 +835,6 @@ onSnapshot(col, (snap) => {
 
 
 </html>
-
 
 
 

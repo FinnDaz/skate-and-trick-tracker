@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+
+
+
+<html>
+
+
+
+<head>
+
+
+
+  <title>Skate Tracker</title>
+
+
+
+  <style>
+
+
+
+    body {
+
+
+
+      font-family: Arial;
+
+
+
+      background: linear-gradient(135deg, #1a1a1a, #000);
+
+
+
+      color: white;
+
+
+
+      text-align: center;
+
+
+
+      margin: 0;
+
+
+
+    }
+
+
+
+    h1 {
+
+
+
+      margin-top: 20px;
+
+
+
+    }
+
+
+
+    .container {
+
+
+
+      max-width: 500px;
+
+
+
+      margin: auto;
+
+
+
+      padding: 20px;
+
+
+
+    }
+
+
+
+    input {
+
+
+
+      padding: 12px;
+
+
+
+      width: 70%;
+
+
+
+      border: none;
+
+
+
+      border-radius: 8px;
+
+
+
+    }
+
+
+
+    button {
+
+
+
+      padding: 12px;
+
+
+
+      margin: 5px;
+
+
+
+      border: none;
+
+
+
+      border-radius: 8px;
+
+
+
+      cursor: pointer;
+
+
+
+      font-weight: bold;
+
+
+
+    }
+
+
+
+    .add-btn {
+
+
+
+      background: #00ffcc;
+
+
+
+    }
+
+
+
+    .trick {
+
+
+
+      background: #222;
+
+
+
+      margin: 15px 0;
+
+
+
+      padding: 15px;
+
+
+
+      border-radius: 12px;
+
+
+
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+
+
+
+    }
+
+
+
+    .land {
+
+
+
+      background: #00c853;
+
+
+
+      color: white;
+
+
+
+    }
+
+
+
+    .miss {
+
+
+
+      background: #d50000;
+
+
+
+      color: white;
+
+
+
+    }
+
+
+
+  </style>
+
+
+
+</head>
+
+
+
+<body>
+
+
+
+<h1>🛹 Skate Progress Tracker</h1>
+
+
+
+<div class="container">
+
+
+
+  <input id="trickName" placeholder="Enter trick name">
+
+
+
+  <button class="add-btn" onclick="addTrick()">Add</button>
+
+
+
+  <div id="trickList"></div>
+
+
+
+</div>
+
+
+
+<script>
+
+
+
+let tricks = JSON.parse(localStorage.getItem("tricks")) || [];
+
+
+
+function save() {
+
+
+
+  localStorage.setItem("tricks", JSON.stringify(tricks));
+
+
+
+}
+
+
+
+function addTrick() {
+
+
+
+  let name = document.getElementById("trickName").value;
+
+
+
+  if (!name) return;
+
+
+
+  tricks.push({ name: name, count: 0, streak: 0, best: 0 });
+
+
+
+  document.getElementById("trickName").value = "";
+
+
+
+  save();
+
+
+
+  render();
+
+
+
+}
+
+
+
+function landTrick(index) {
+
+
+
+  let trick = tricks[index];
+
+
+
+  trick.count++;
+
+
+
+  trick.streak++;
+
+
+
+  if (trick.streak > trick.best) {
+
+
+
+    trick.best = trick.streak;
+
+
+
+  }
+
+
+
+  save();
+
+
+
+  render();
+
+
+
+}
+
+
+
+function failTrick(index) {
+
+
+
+  tricks[index].streak = 0;
+
+
+
+  save();
+
+
+
+  render();
+
+
+
+}
+
+
+
+function render() {
+
+
+
+  let list = document.getElementById("trickList");
+
+
+
+  list.innerHTML = "";
+
+
+
+  tricks.forEach((trick, index) => {
+
+
+
+    list.innerHTML += `
+
+
+
+      <div class="trick">
+
+
+
+        <h2>${trick.name}</h2>
+
+
+
+        <p>Total: ${trick.count}</p>
+
+
+
+        <p>🔥 Streak: ${trick.streak}</p>
+
+
+
+        <p>🏆 Best: ${trick.best}</p>
+
+
+
+        <button class="land" onclick="landTrick(${index})">Landed</button>
+
+
+
+        <button class="miss" onclick="failTrick(${index})">Missed</button>
+
+
+
+      </div>
+
+
+
+    `;
+
+
+
+  });
+
+
+
+}
+
+
+
+render();
+
+
+
+</script>
+
+
+
+</body>
+
+
+
+</html>
+

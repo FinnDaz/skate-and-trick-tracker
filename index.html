@@ -46,47 +46,27 @@
 
 
 
-    h1 {
+    .box {
 
 
 
-      margin: 20px 0 5px;
+      max-width: 400px;
 
 
 
-    }
+      margin: 60px auto;
 
 
 
-    .subtitle {
+      padding: 20px;
 
 
 
-      color: #888;
+      background: #171717;
 
 
 
-      margin-bottom: 10px;
-
-
-
-    }
-
-
-
-    .container {
-
-
-
-      max-width: 520px;
-
-
-
-      margin: auto;
-
-
-
-      padding: 15px;
+      border-radius: 12px;
 
 
 
@@ -106,23 +86,15 @@
 
 
 
-      margin: 6px 0;
+      margin: 8px 0;
 
 
 
-      border-radius: 12px;
+      border-radius: 10px;
 
 
 
       border: none;
-
-
-
-      outline: none;
-
-
-
-      box-sizing: border-box;
 
 
 
@@ -142,7 +114,7 @@
 
 
 
-      margin-top: 5px;
+      margin-top: 8px;
 
 
 
@@ -150,7 +122,7 @@
 
 
 
-      border-radius: 12px;
+      border-radius: 10px;
 
 
 
@@ -170,19 +142,47 @@
 
 
 
-    .board {
+    .hidden { display: none; }
 
 
 
-      margin: 15px 0;
+    .topbar {
 
 
 
-      color: #00ffcc;
+      display: flex;
 
 
 
-      font-weight: bold;
+      justify-content: space-between;
+
+
+
+      padding: 10px;
+
+
+
+      background: #111;
+
+
+
+    }
+
+
+
+    .content {
+
+
+
+      max-width: 520px;
+
+
+
+      margin: auto;
+
+
+
+      padding: 15px;
 
 
 
@@ -194,19 +194,19 @@
 
 
 
-      background: #171717;
+      background: #1c1c1c;
 
 
 
-      margin: 12px 0;
+      margin: 10px 0;
 
 
 
-      padding: 15px;
+      padding: 12px;
 
 
 
-      border-radius: 14px;
+      border-radius: 10px;
 
 
 
@@ -218,183 +218,15 @@
 
 
 
-    .rank {
+    .error {
 
 
 
-      color: #00ffcc;
-
-
-
-      font-weight: bold;
-
-
-
-      margin-bottom: 5px;
-
-
-
-    }
-
-
-
-    .user {
-
-
-
-      font-size: 13px;
-
-
-
-      color: #aaa;
-
-
-
-    }
-
-
-
-    .stats {
-
-
-
-      font-size: 14px;
-
-
-
-      color: #ccc;
-
-
-
-      margin: 8px 0;
-
-
-
-      line-height: 1.5;
-
-
-
-    }
-
-
-
-    .btnRow {
-
-
-
-      display: flex;
-
-
-
-      gap: 8px;
-
-
-
-    }
-
-
-
-    .land {
-
-
-
-      background: #00c853;
-
-
-
-      color: white;
-
-
-
-      flex: 1;
-
-
-
-      border-radius: 10px;
-
-
-
-      padding: 8px;
-
-
-
-      border: none;
-
-
-
-      font-weight: bold;
-
-
-
-    }
-
-
-
-    .miss {
-
-
-
-      background: #d50000;
-
-
-
-      color: white;
-
-
-
-      flex: 1;
-
-
-
-      border-radius: 10px;
-
-
-
-      padding: 8px;
-
-
-
-      border: none;
-
-
-
-      font-weight: bold;
-
-
-
-    }
-
-
-
-    video {
-
-
-
-      width: 100%;
+      color: red;
 
 
 
       margin-top: 10px;
-
-
-
-      border-radius: 10px;
-
-
-
-    }
-
-
-
-    .file {
-
-
-
-      margin-top: 10px;
-
-
-
-      width: 100%;
 
 
 
@@ -414,35 +246,83 @@
 
 
 
-<h1>🛹 Skate Tracker</h1>
+<div id="authBox" class="box">
 
 
 
-<div class="subtitle">Leaderboard • Videos • Multiplayer</div>
+  <h2>🛹 Skate Tracker</h2>
 
 
 
-<div class="container">
+  <input id="username" placeholder="Username (signup only)">
 
 
 
-  <input id="username" placeholder="Enter username">
+  <input id="email" placeholder="Email">
 
 
 
-  <input id="trickName" placeholder="Enter trick name">
+  <input id="password" type="password" placeholder="Password">
 
 
 
-  <button onclick="addTrick()">Add Trick</button>
+  <button onclick="signup()">Sign Up</button>
 
 
 
-  <div class="board">🏆 Leaderboard</div>
+  <button onclick="login()">Login</button>
 
 
 
-  <div id="list"></div>
+  <div id="error" class="error"></div>
+
+
+
+</div>
+
+
+
+<div id="app" class="hidden">
+
+
+
+  <div class="topbar">
+
+
+
+    <div>🛹 Skate Tracker</div>
+
+
+
+    <button onclick="logout()">Logout</button>
+
+
+
+  </div>
+
+
+
+  <div class="content">
+
+
+
+    <h3 id="userInfo"></h3>
+
+
+
+    <input id="trickName" placeholder="Trick name">
+
+
+
+    <button onclick="addTrick()">Add Trick</button>
+
+
+
+    <div id="list"></div>
+
+
+
+  </div>
 
 
 
@@ -482,7 +362,11 @@ import {
 
 
 
-  updateDoc
+  setDoc,
+
+
+
+  getDoc
 
 
 
@@ -490,7 +374,31 @@ import {
 
 
 
-/* 🔥 YOUR FIREBASE CONFIG */
+import {
+
+
+
+  getAuth,
+
+
+
+  createUserWithEmailAndPassword,
+
+
+
+  signInWithEmailAndPassword,
+
+
+
+  onAuthStateChanged,
+
+
+
+  signOut
+
+
+
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 
 
@@ -534,23 +442,211 @@ const db = getFirestore(app);
 
 
 
+const auth = getAuth(app);
+
+
+
 const col = collection(db, "tricks");
 
 
 
-let tricks = [];
+let currentUser = null;
 
 
 
-let currentUser = "";
+let username = "";
 
 
 
-document.getElementById("username").addEventListener("input", e => {
+/* ERROR HANDLER */
 
 
 
-  currentUser = e.target.value;
+function showError(msg) {
+
+
+
+  document.getElementById("error").innerText = msg;
+
+
+
+}
+
+
+
+/* SIGNUP */
+
+
+
+window.signup = async () => {
+
+
+
+  try {
+
+
+
+    const email = emailInput.value;
+
+
+
+    const pass = password.value;
+
+
+
+    const user = usernameInput.value;
+
+
+
+    if (!user) return showError("Enter username");
+
+
+
+    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+
+
+
+    await setDoc(doc(db, "users", cred.user.uid), {
+
+
+
+      username: user
+
+
+
+    });
+
+
+
+    showError("");
+
+
+
+  } catch (e) {
+
+
+
+    showError(e.message);
+
+
+
+  }
+
+
+
+};
+
+
+
+/* LOGIN */
+
+
+
+window.login = async () => {
+
+
+
+  try {
+
+
+
+    await signInWithEmailAndPassword(auth, emailInput.value, password.value);
+
+
+
+    showError("");
+
+
+
+  } catch (e) {
+
+
+
+    showError(e.message);
+
+
+
+  }
+
+
+
+};
+
+
+
+window.logout = () => signOut(auth);
+
+
+
+/* AUTH STATE */
+
+
+
+onAuthStateChanged(auth, async (user) => {
+
+
+
+  if (user) {
+
+
+
+    currentUser = user;
+
+
+
+    authBox.classList.add("hidden");
+
+
+
+    app.classList.remove("hidden");
+
+
+
+    try {
+
+
+
+      const snap = await getDoc(doc(db, "users", user.uid));
+
+
+
+      username = snap.exists() ? snap.data().username : "User";
+
+
+
+    } catch {
+
+
+
+      username = "User";
+
+
+
+    }
+
+
+
+    userInfo.innerText = "👤 " + username;
+
+
+
+    loadTricks();
+
+
+
+  } else {
+
+
+
+    authBox.classList.remove("hidden");
+
+
+
+    app.classList.add("hidden");
+
+
+
+  }
 
 
 
@@ -558,59 +654,47 @@ document.getElementById("username").addEventListener("input", e => {
 
 
 
-function render() {
+/* LOAD */
 
 
 
-  let list = document.getElementById("list");
+function loadTricks() {
 
 
 
-  list.innerHTML = "";
+  onSnapshot(col, (snap) => {
 
 
 
-  let sorted = [...tricks].sort((a, b) => b.best - a.best);
+    list.innerHTML = "";
 
 
 
-  sorted.forEach((t, i) => {
+    snap.forEach(d => {
 
 
 
-    list.innerHTML += `
+      let t = d.data();
 
 
 
-      <div class="card">
+      list.innerHTML += `
 
 
 
-        <div class="rank">#${i + 1}</div>
+        <div class="card">
 
 
 
-        <div class="user">👤 ${t.user}</div>
+          👤 ${t.user}<br>
 
 
 
-        <h3>${t.name}</h3>
+          🛹 ${t.name}<br>
 
 
 
-        <div class="stats">
-
-
-
-          🔥 Streak: ${t.streak}<br>
-
-
-
-          🏆 Best: ${t.best}<br>
-
-
-
-          📊 Total: ${t.total}
+          🔥 ${t.streak}
 
 
 
@@ -618,39 +702,11 @@ function render() {
 
 
 
-        <div class="btnRow">
+      `;
 
 
 
-          <button class="land" onclick="land('${t.id}', ${t.streak}, ${t.best}, ${t.total})">Landed</button>
-
-
-
-          <button class="miss" onclick="miss('${t.id}')">Missed</button>
-
-
-
-        </div>
-
-
-
-        <input class="file" type="file" accept="video/*"
-
-
-
-          onchange="addVideo('${t.id}', event)">
-
-
-
-        ${t.video ? `<video controls src="${t.video}"></video>` : ""}
-
-
-
-      </div>
-
-
-
-    `;
+    });
 
 
 
@@ -662,15 +718,15 @@ function render() {
 
 
 
-window.addTrick = async function() {
+/* ADD */
 
 
 
-  let name = document.getElementById("trickName").value;
+window.addTrick = async () => {
 
 
 
-  if (!name || !currentUser) return;
+  if (!currentUser) return;
 
 
 
@@ -678,27 +734,15 @@ window.addTrick = async function() {
 
 
 
-    name,
+    name: trickName.value,
 
 
 
-    user: currentUser,
+    user: username,
 
 
 
-    streak: 0,
-
-
-
-    best: 0,
-
-
-
-    total: 0,
-
-
-
-    video: ""
+    streak: 0
 
 
 
@@ -706,7 +750,7 @@ window.addTrick = async function() {
 
 
 
-  document.getElementById("trickName").value = "";
+  trickName.value = "";
 
 
 
@@ -714,115 +758,15 @@ window.addTrick = async function() {
 
 
 
-window.land = async function(id, streak, best, total) {
+/* INPUT SHORTCUTS */
 
 
 
-  const ref = doc(db, "tricks", id);
+const emailInput = document.getElementById("email");
 
 
 
-  streak++;
-
-
-
-  total++;
-
-
-
-  if (streak > best) best = streak;
-
-
-
-  await updateDoc(ref, { streak, best, total });
-
-
-
-};
-
-
-
-window.miss = async function(id) {
-
-
-
-  const ref = doc(db, "tricks", id);
-
-
-
-  await updateDoc(ref, { streak: 0 });
-
-
-
-};
-
-
-
-window.addVideo = async function(id, event) {
-
-
-
-  const file = event.target.files[0];
-
-
-
-  if (!file) return;
-
-
-
-  const reader = new FileReader();
-
-
-
-  reader.onload = async function(e) {
-
-
-
-    const ref = doc(db, "tricks", id);
-
-
-
-    await updateDoc(ref, { video: e.target.result });
-
-
-
-  };
-
-
-
-  reader.readAsDataURL(file);
-
-
-
-};
-
-
-
-onSnapshot(col, (snap) => {
-
-
-
-  tricks = [];
-
-
-
-  snap.forEach(d => {
-
-
-
-    tricks.push({ id: d.id, ...d.data() });
-
-
-
-  });
-
-
-
-  render();
-
-
-
-});
+const usernameInput = document.getElementById("username");
 
 
 
@@ -835,6 +779,5 @@ onSnapshot(col, (snap) => {
 
 
 </html>
-
 
 

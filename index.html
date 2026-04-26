@@ -26,15 +26,11 @@
 
 
 
-      background: linear-gradient(135deg, #0f0f0f, #000);
+      background: linear-gradient(135deg, #0a0a0a, #000);
 
 
 
       color: white;
-
-
-
-      text-align: center;
 
 
 
@@ -50,7 +46,31 @@
 
 
 
-      margin-top: 20px;
+      text-align: center;
+
+
+
+      padding: 20px 0 5px;
+
+
+
+    }
+
+
+
+    .subtitle {
+
+
+
+      text-align: center;
+
+
+
+      color: #888;
+
+
+
+      margin-bottom: 10px;
 
 
 
@@ -70,7 +90,27 @@
 
 
 
-      padding: 20px;
+      padding: 15px;
+
+
+
+    }
+
+
+
+    .inputBox {
+
+
+
+      display: flex;
+
+
+
+      gap: 10px;
+
+
+
+      margin-bottom: 15px;
 
 
 
@@ -82,15 +122,15 @@
 
 
 
+      flex: 1;
+
+
+
       padding: 12px;
 
 
 
-      width: 70%;
-
-
-
-      border-radius: 10px;
+      border-radius: 12px;
 
 
 
@@ -98,35 +138,7 @@
 
 
 
-    }
-
-
-
-    button {
-
-
-
-      padding: 10px 12px;
-
-
-
-      margin: 5px;
-
-
-
-      border-radius: 10px;
-
-
-
-      border: none;
-
-
-
-      cursor: pointer;
-
-
-
-      font-weight: bold;
+      outline: none;
 
 
 
@@ -138,63 +150,27 @@
 
 
 
+      padding: 12px 14px;
+
+
+
+      border-radius: 12px;
+
+
+
+      border: none;
+
+
+
       background: #00ffcc;
 
 
 
-    }
+      font-weight: bold;
 
 
 
-    .trick {
-
-
-
-      background: #1e1e1e;
-
-
-
-      margin: 15px 0;
-
-
-
-      padding: 15px;
-
-
-
-      border-radius: 14px;
-
-
-
-    }
-
-
-
-    .land {
-
-
-
-      background: #00c853;
-
-
-
-      color: white;
-
-
-
-    }
-
-
-
-    .miss {
-
-
-
-      background: #d50000;
-
-
-
-      color: white;
+      cursor: pointer;
 
 
 
@@ -206,11 +182,199 @@
 
 
 
-      margin-top: 20px;
+      text-align: center;
+
+
+
+      margin: 10px 0 20px;
 
 
 
       color: #00ffcc;
+
+
+
+      font-weight: bold;
+
+
+
+    }
+
+
+
+    .trick {
+
+
+
+      background: #151515;
+
+
+
+      margin: 12px 0;
+
+
+
+      padding: 15px;
+
+
+
+      border-radius: 16px;
+
+
+
+    }
+
+
+
+    .rank {
+
+
+
+      color: #00ffcc;
+
+
+
+      font-weight: bold;
+
+
+
+      margin-bottom: 5px;
+
+
+
+    }
+
+
+
+    .stats {
+
+
+
+      font-size: 14px;
+
+
+
+      color: #ccc;
+
+
+
+      margin-bottom: 10px;
+
+
+
+      line-height: 1.6;
+
+
+
+    }
+
+
+
+    .buttons {
+
+
+
+      display: flex;
+
+
+
+      gap: 8px;
+
+
+
+      margin-bottom: 10px;
+
+
+
+    }
+
+
+
+    button.action {
+
+
+
+      flex: 1;
+
+
+
+      padding: 10px;
+
+
+
+      border-radius: 10px;
+
+
+
+      border: none;
+
+
+
+      font-weight: bold;
+
+
+
+      cursor: pointer;
+
+
+
+    }
+
+
+
+    .land { background: #00c853; color: white; }
+
+
+
+    .miss { background: #d50000; color: white; }
+
+
+
+    .videoBox {
+
+
+
+      margin-top: 10px;
+
+
+
+    }
+
+
+
+    video {
+
+
+
+      width: 100%;
+
+
+
+      border-radius: 12px;
+
+
+
+      margin-top: 10px;
+
+
+
+    }
+
+
+
+    .upload {
+
+
+
+      margin-top: 5px;
+
+
+
+      font-size: 12px;
+
+
+
+      color: #aaa;
 
 
 
@@ -234,27 +398,31 @@
 
 
 
+<div class="subtitle">Track tricks • build streaks • save clips</div>
+
+
+
 <div class="container">
 
 
 
-  <input id="trickName" placeholder="Enter trick name">
+  <div class="inputBox">
 
 
 
-  <button class="add" onclick="addTrick()">Add Trick</button>
+    <input id="trickName" placeholder="Enter trick name">
 
 
 
-  <div class="board">
-
-
-
-    <h2>🏆 Leaderboard (Best Streaks)</h2>
+    <button class="add" onclick="addTrick()">Add</button>
 
 
 
   </div>
+
+
+
+  <div class="board">🏆 Leaderboard</div>
 
 
 
@@ -290,11 +458,7 @@ function addTrick() {
 
 
 
-    name: name,
-
-
-
-    count: 0,
+    name,
 
 
 
@@ -302,7 +466,15 @@ function addTrick() {
 
 
 
-    best: 0
+    best: 0,
+
+
+
+    total: 0,
+
+
+
+    video: null
 
 
 
@@ -322,23 +494,27 @@ function addTrick() {
 
 
 
-function landTrick(i) {
+function land(i) {
 
 
 
-  let t = tricks[i];
+  tricks[i].streak++;
 
 
 
-  t.count++;
+  tricks[i].total++;
 
 
 
-  t.streak++;
+  if (tricks[i].streak > tricks[i].best) {
 
 
 
-  if (t.streak > t.best) t.best = t.streak;
+    tricks[i].best = tricks[i].streak;
+
+
+
+  }
 
 
 
@@ -350,7 +526,7 @@ function landTrick(i) {
 
 
 
-function missTrick(i) {
+function miss(i) {
 
 
 
@@ -359,6 +535,46 @@ function missTrick(i) {
 
 
   render();
+
+
+
+}
+
+
+
+function addVideo(i, event) {
+
+
+
+  let file = event.target.files[0];
+
+
+
+  if (!file) return;
+
+
+
+  let reader = new FileReader();
+
+
+
+  reader.onload = function(e) {
+
+
+
+    tricks[i].video = e.target.result;
+
+
+
+    render();
+
+
+
+  };
+
+
+
+  reader.readAsDataURL(file);
 
 
 
@@ -394,27 +610,67 @@ function render() {
 
 
 
-        <h2>#${index + 1} ${t.name}</h2>
+        <div class="rank">#${index + 1} Rank</div>
 
 
 
-        <p>🔥 Streak: ${t.streak}</p>
+        <h2>${t.name}</h2>
 
 
 
-        <p>🏆 Best: ${t.best}</p>
+        <div class="stats">
 
 
 
-        <p>Total: ${t.count}</p>
+          🔥 Streak: ${t.streak}<br>
 
 
 
-        <button class="land" onclick="landTrick(${tricks.indexOf(t)})">Landed</button>
+          🏆 Best: ${t.best}<br>
 
 
 
-        <button class="miss" onclick="missTrick(${tricks.indexOf(t)})">Missed</button>
+          📊 Total: ${t.total}
+
+
+
+        </div>
+
+
+
+        <div class="buttons">
+
+
+
+          <button class="action land" onclick="land(${tricks.indexOf(t)})">Landed</button>
+
+
+
+          <button class="action miss" onclick="miss(${tricks.indexOf(t)})">Missed</button>
+
+
+
+        </div>
+
+
+
+        <div class="videoBox">
+
+
+
+          <input type="file" accept="video/*" onchange="addVideo(${tricks.indexOf(t)}, event)">
+
+
+
+          <div class="upload">Add your clip</div>
+
+
+
+          ${t.video ? `<video controls src="${t.video}"></video>` : ""}
+
+
+
+        </div>
 
 
 
@@ -447,4 +703,6 @@ render();
 
 
 </html>
+
+
 

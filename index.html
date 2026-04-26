@@ -26,7 +26,7 @@
 
 
 
-      background: #0a0a0a;
+      background: linear-gradient(135deg, #0a0a0a, #000);
 
 
 
@@ -46,7 +46,15 @@
 
 
 
-    h1 { margin: 20px 0 5px; }
+    h1 {
+
+
+
+      margin: 20px 0 5px;
+
+
+
+    }
 
 
 
@@ -70,7 +78,7 @@
 
 
 
-      max-width: 500px;
+      max-width: 520px;
 
 
 
@@ -86,31 +94,7 @@
 
 
 
-    .inputBox {
-
-
-
-      display: flex;
-
-
-
-      gap: 10px;
-
-
-
-      margin-bottom: 10px;
-
-
-
-    }
-
-
-
     input {
-
-
-
-      flex: 1;
 
 
 
@@ -127,6 +111,34 @@
 
 
       outline: none;
+
+
+
+      margin: 5px 0;
+
+
+
+      width: 100%;
+
+
+
+      box-sizing: border-box;
+
+
+
+    }
+
+
+
+    .inputRow {
+
+
+
+      display: flex;
+
+
+
+      gap: 10px;
 
 
 
@@ -162,6 +174,14 @@
 
 
 
+      width: 100%;
+
+
+
+      margin-top: 5px;
+
+
+
     }
 
 
@@ -170,11 +190,11 @@
 
 
 
-      margin: 10px 0 20px;
-
-
-
       color: #00ffcc;
+
+
+
+      margin: 15px 0;
 
 
 
@@ -190,7 +210,7 @@
 
 
 
-      background: #1c1c1c;
+      background: #151515;
 
 
 
@@ -214,27 +234,7 @@
 
 
 
-    .rank {
-
-
-
-      color: #00ffcc;
-
-
-
-      font-weight: bold;
-
-
-
-    }
-
-
-
     .user {
-
-
-
-      color: #aaa;
 
 
 
@@ -242,7 +242,7 @@
 
 
 
-      margin-bottom: 5px;
+      color: #aaa;
 
 
 
@@ -266,7 +266,7 @@
 
 
 
-      margin-bottom: 10px;
+      margin: 8px 0;
 
 
 
@@ -282,7 +282,7 @@
 
 
 
-      margin: 5px;
+      margin: 5px 5px 5px 0;
 
 
 
@@ -314,22 +314,6 @@
 
 
 
-    .videoInput {
-
-
-
-      width: 100%;
-
-
-
-      margin-top: 10px;
-
-
-
-    }
-
-
-
     video {
 
 
@@ -343,6 +327,18 @@
 
 
       border-radius: 10px;
+
+
+
+    }
+
+
+
+    .file {
+
+
+
+      margin-top: 10px;
 
 
 
@@ -366,7 +362,7 @@
 
 
 
-<div class="subtitle">Leaderboard • Usernames • Videos</div>
+<div class="subtitle">Leaderboard • Streaks • Videos • Friends</div>
 
 
 
@@ -374,15 +370,11 @@
 
 
 
-  <input id="username" placeholder="Enter your username">
+  <input id="username" placeholder="Enter username">
 
 
 
-  <br><br>
-
-
-
-  <div class="inputBox">
+  <div class="inputRow">
 
 
 
@@ -390,11 +382,11 @@
 
 
 
-    <button class="add" onclick="addTrick()">Add</button>
-
-
-
   </div>
+
+
+
+  <button class="add" onclick="addTrick()">Add Trick</button>
 
 
 
@@ -506,7 +498,7 @@ let currentUser = "";
 
 
 
-document.getElementById("username").addEventListener("input", (e) => {
+document.getElementById("username").addEventListener("input", e => {
 
 
 
@@ -546,15 +538,11 @@ function render() {
 
 
 
-        <div class="rank">#${index + 1}</div>
-
-
-
         <div class="user">👤 ${t.user}</div>
 
 
 
-        <h3>${t.name}</h3>
+        <h3>#${index + 1} ${t.name}</h3>
 
 
 
@@ -586,7 +574,7 @@ function render() {
 
 
 
-        <input class="videoInput" type="file" accept="video/*"
+        <input class="file" type="file" accept="video/*"
 
 
 
@@ -787,3 +775,5 @@ onSnapshot(col, (snap) => {
 
 
 </html>
+
+

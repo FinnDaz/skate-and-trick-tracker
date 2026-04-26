@@ -118,11 +118,11 @@
 
 
 
-      border: none;
-
-
-
       border-radius: 10px;
+
+
+
+      border: none;
 
 
 
@@ -146,50 +146,6 @@
 
 
 
-    .topbar {
-
-
-
-      display: flex;
-
-
-
-      justify-content: space-between;
-
-
-
-      padding: 10px;
-
-
-
-      background: #111;
-
-
-
-    }
-
-
-
-    .content {
-
-
-
-      max-width: 520px;
-
-
-
-      margin: auto;
-
-
-
-      padding: 15px;
-
-
-
-    }
-
-
-
     .card {
 
 
@@ -198,11 +154,11 @@
 
 
 
-      margin: 10px 0;
+      margin: 10px;
 
 
 
-      padding: 12px;
+      padding: 10px;
 
 
 
@@ -211,22 +167,6 @@
 
 
       text-align: left;
-
-
-
-    }
-
-
-
-    .error {
-
-
-
-      color: red;
-
-
-
-      margin-top: 10px;
 
 
 
@@ -254,7 +194,7 @@
 
 
 
-  <input id="username" placeholder="Username (signup only)">
+  <input id="username" placeholder="Username (signup)">
 
 
 
@@ -274,10 +214,6 @@
 
 
 
-  <div id="error" class="error"></div>
-
-
-
 </div>
 
 
@@ -286,43 +222,27 @@
 
 
 
-  <div class="topbar">
+  <h3 id="userInfo">👤 Loading...</h3>
 
 
 
-    <div>🛹 Skate Tracker</div>
+  <input id="trickName" placeholder="Trick name">
 
 
 
-    <button onclick="logout()">Logout</button>
+  <button onclick="addTrick()">Add Trick</button>
 
 
 
-  </div>
+  <h3>🏆 Leaderboard</h3>
 
 
 
-  <div class="content">
+  <div id="list"></div>
 
 
 
-    <h3 id="userInfo"></h3>
-
-
-
-    <input id="trickName" placeholder="Trick name">
-
-
-
-    <button onclick="addTrick()">Add Trick</button>
-
-
-
-    <div id="list"></div>
-
-
-
-  </div>
+  <button onclick="logout()">Logout</button>
 
 
 
@@ -450,27 +370,7 @@ const col = collection(db, "tricks");
 
 
 
-let currentUser = null;
-
-
-
-let username = "";
-
-
-
-/* ERROR HANDLER */
-
-
-
-function showError(msg) {
-
-
-
-  document.getElementById("error").innerText = msg;
-
-
-
-}
+let username = "User";
 
 
 
@@ -482,51 +382,55 @@ window.signup = async () => {
 
 
 
-  try {
+  const email = emailInput.value;
 
 
 
-    const email = emailInput.value;
+  const pass = passwordInput.value;
 
 
 
-    const pass = password.value;
+  const user = usernameInput.value;
 
 
 
-    const user = usernameInput.value;
+  const cred = await createUserWithEmailAndPassword(auth, email, pass);
 
 
 
-    if (!user) return showError("Enter username");
+  // try to save username (but don't break if it fails)
 
 
 
-    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+  if (user) {
 
 
 
-    await setDoc(doc(db, "users", cred.user.uid), {
+    try {
 
 
 
-      username: user
+      await setDoc(doc(db, "users", cred.user.uid), {
 
 
 
-    });
+        username: user
 
 
 
-    showError("");
+      });
 
 
 
-  } catch (e) {
+    } catch (e) {
 
 
 
-    showError(e.message);
+      console.log("Username save failed", e);
+
+
+
+    }
 
 
 
@@ -546,27 +450,7 @@ window.login = async () => {
 
 
 
-  try {
-
-
-
-    await signInWithEmailAndPassword(auth, emailInput.value, password.value);
-
-
-
-    showError("");
-
-
-
-  } catch (e) {
-
-
-
-    showError(e.message);
-
-
-
-  }
+  await signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
 
 
 
@@ -582,15 +466,11 @@ window.logout = () => signOut(auth);
 
 
 
-onAuthStateChanged(auth, async (user) => {
+onAuthStateChanged(auth, (user) => {
 
 
 
   if (user) {
-
-
-
-    currentUser = user;
 
 
 
@@ -602,31 +482,15 @@ onAuthStateChanged(auth, async (user) => {
 
 
 
-    try {
+    userInfo.innerText = "👤 Loading...";
 
 
 
-      const snap = await getDoc(doc(db, "users", user.uid));
+    // load username AFTER UI shows
 
 
 
-      username = snap.exists() ? snap.data().username : "User";
-
-
-
-    } catch {
-
-
-
-      username = "User";
-
-
-
-    }
-
-
-
-    userInfo.innerText = "👤 " + username;
+    loadUsername(user.uid);
 
 
 
@@ -654,7 +518,55 @@ onAuthStateChanged(auth, async (user) => {
 
 
 
-/* LOAD */
+/* SAFE USERNAME LOAD */
+
+
+
+async function loadUsername(uid) {
+
+
+
+  try {
+
+
+
+    const snap = await getDoc(doc(db, "users", uid));
+
+
+
+    if (snap.exists()) {
+
+
+
+      username = snap.data().username;
+
+
+
+    }
+
+
+
+  } catch (e) {
+
+
+
+    console.log("Username load failed", e);
+
+
+
+  }
+
+
+
+  userInfo.innerText = "👤 " + username;
+
+
+
+}
+
+
+
+/* LOAD TRICKS */
 
 
 
@@ -670,11 +582,27 @@ function loadTricks() {
 
 
 
+    let tricks = [];
+
+
+
     snap.forEach(d => {
 
 
 
-      let t = d.data();
+      tricks.push(d.data());
+
+
+
+    });
+
+
+
+    tricks.sort((a,b)=>b.streak - a.streak);
+
+
+
+    tricks.forEach((t, i) => {
 
 
 
@@ -683,6 +611,10 @@ function loadTricks() {
 
 
         <div class="card">
+
+
+
+          #${i+1}<br>
 
 
 
@@ -726,10 +658,6 @@ window.addTrick = async () => {
 
 
 
-  if (!currentUser) return;
-
-
-
   await addDoc(col, {
 
 
@@ -758,11 +686,15 @@ window.addTrick = async () => {
 
 
 
-/* INPUT SHORTCUTS */
+/* INPUTS */
 
 
 
 const emailInput = document.getElementById("email");
+
+
+
+const passwordInput = document.getElementById("password");
 
 
 
@@ -779,5 +711,4 @@ const usernameInput = document.getElementById("username");
 
 
 </html>
-
 
